@@ -1,0 +1,10 @@
+services:
+  devcontainer:
+    build: .
+    image: docker.io/1ukastesar/fit-flp-rs
+    ports:
+      - 127.0.0.1:8888:8888
+    userns_mode: host
+    volumes:
+      - .:/workspaces/rs-playground:Z
+      - ./work:/home/jovyan/work:Z
