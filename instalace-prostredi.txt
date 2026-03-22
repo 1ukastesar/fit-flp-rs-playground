@@ -1,0 +1,162 @@
+Jupyter + Rust kernel (EvCxR) — instalacni pokyny
+===========================================================
+
+Cil: nainstalovat Jupyter Notebook a Rust kernel (EvCxR), pomoci
+ktereho je mozne spoustet bunky s kodem v jazyce Rust.
+
+Poznamky:
+- Prikazy nize jsou psany pro bash (Ubuntu/WSL/RHEL/Centos Stream).
+- Pokud pouzijte `pip install --user`, casto je potreba pridat `~/.local/bin` do PATH.
+- Rust kernel do Jupyteru: `evcxr_jupyter`.
+- Navod uvazuje `notebook` (klasicky Jupyter Notebook).
+- Alternativne lze resit i pres `Jupyter Lab` (neni zde uvedeno).
+
+------------------------------------------------------------
+1) Ubuntu 24.04 LTS
+------------------------------------------------------------
+
+A) Systemove balicky
+--------------------
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv build-essential pkg-config
+
+# (Volitelne, doporuceno pri problemech s kompilaci / zavislostmi)
+sudo apt install -y libssl-dev libzmq3-dev
+
+B) Jupyter Notebook (klasicky)
+------------------------------
+python3 -m pip install --upgrade pip
+python3 -m pip install notebook
+
+# Alternativa pro lokalni instalaci v $HOME/.local/bin
+# python3 -m pip install --user notebook
+
+# Pokud prikaz `jupyter` nenajde shell, pridat PATH:
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+C) Rust (rustup)
+----------------
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"
+
+D) Rust kernel (EvCxR)
+----------------------
+cargo install --locked evcxr_jupyter
+evcxr_jupyter --install
+
+E) Overeni a spusteni (Notebook)
+--------------------------------
+jupyter kernelspec list
+jupyter notebook
+
+
+------------------------------------------------------------
+2) Windows (WSL) — Ubuntu pod WSL
+------------------------------------------------------------
+
+Na Windows lze resit pres Ubuntu na WSL (Windows subsystem for Linux).
+
+A) Priprava WSL
+---------------
+# Pokud uz mate WSL + Ubuntu nainstalovane, preskocte na bod B.
+
+# V PowerShellu (Run as Administrator):
+wsl --install -d Ubuntu
+
+# Po instalaci otevrit Ubuntu terminal (WSL) a pokracovat nize
+
+B) V Ubuntu (WSL)
+-----------------
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv build-essential pkg-config
+sudo apt install -y libssl-dev libzmq3-dev   # doporucene
+
+python3 -m pip install --upgrade pip
+python3 -m pip install notebook
+
+# Alternativa pro lokalni instalaci v $HOME/.local/bin
+# python3 -m pip install --user notebook
+
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"
+
+cargo install --locked evcxr_jupyter
+evcxr_jupyter --install
+
+jupyter kernelspec list
+jupyter notebook
+
+Poznamka k pristupu z Windows:
+- `jupyter notebook` v WSL vypise URL (obvykle http://127.0.0.1:8888/...)
+- Toto url otevrete na Windows v prohlizeci
+- Pokud by URL nebylo dostupne, zkuste spustit:
+  jupyter notebook --ip=127.0.0.1
+
+
+------------------------------------------------------------
+3) RHEL / CentOS Stream (dnf)
+------------------------------------------------------------
+
+A) Systemove balicky
+-------------------
+sudo dnf install -y python3 python3-pip gcc gcc-c++ make pkgconf-pkg-config
+
+# (Volitelne, doporucene pri problemech s kompilaci / zavislostmi)
+sudo dnf install -y openssl-devel zeromq-devel
+
+B) Jupyter Notebook (klasicky)
+------------------------------
+python3 -m pip install --upgrade pip
+python3 -m pip install notebook
+
+# Alternativa pro lokalni instalaci v $HOME/.local/bin
+# python3 -m pip install --user notebook
+
+# Pokud prikaz `jupyter` nenajde shell, pridej PATH:
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+C) Rust (rustup)
+----------------
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"
+
+D) Rust kernel (EvCxR)
+----------------------
+cargo install --locked evcxr_jupyter
+evcxr_jupyter --install
+
+E) Overeni a spusteni (Notebook)
+--------------------------------
+jupyter kernelspec list
+jupyter notebook
+
+
+------------------------------------------------------------
+Troubleshooting (rychle tipy)
+------------------------------------------------------------
+
+1) `jupyter: command not found`
+- Chybi cesta k jupyter
+  export PATH="$HOME/.local/bin:$PATH"
+  (a pridej to do ~/.bashrc)
+- Nebo chybi jupyter (doinstalovat)
+
+2) `cargo: command not found`
+- Neni nacteny rustup env:
+  source "$HOME/.cargo/env"
+- Nebo chybi cargo (doinstalovat)
+
+3) Kompilace EvCxR selhava (zmq/openssl/cc)
+- Ubuntu: doinstalovat `build-essential pkg-config libssl-dev libzmq3-dev`
+- RHEL/CentOS: doinstalovat `gcc gcc-c++ make pkgconf-pkg-config openssl-devel zeromq-devel`
+
+4) Nevidim Rust kernel v Jupyteru
+- Zkusit znovu:
+  evcxr_jupyter --install
+- A potom:
+  jupyter kernelspec list
