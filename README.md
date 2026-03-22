@@ -56,6 +56,16 @@ jupyter notebook list
 
 And then open the provided URL in your web browser to access the Jupyter interface.
 
+>[!TIP]
+> If you're running the container on a remote server,
+you may want to get just the token to construct the URL manually
+or enter it into jupyter authorization page in the browser:
+
+```bash
+# Docker Compose: run in current directory
+dce devcontainer jupyter notebook list | grep --color=never -Po 'token=\K\S+'
+```
+
 - **Cargo / rustc**: Run Rust tools interactively from the container shell:
 
 ```bash
