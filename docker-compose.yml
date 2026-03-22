@@ -10,3 +10,4 @@ services:
       - .:/workspaces/rs-playground:Z
       - ./work:/home/jovyan/work:Z
       - ./overrides.json:/opt/conda/share/jupyter/lab/settings/overrides.json:ro,Z
+      - ./jupyter_server_config.py:/home/jovyan/.jupyter/jupyter_server_config.py:ro,Z

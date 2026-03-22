@@ -23,7 +23,15 @@ git clone https://github.com/1ukastesar/fit-flp-rs-playground.git flp-rs-playgro
 cd flp-rs-playground
 ```
 
-3. **Start the development environment**:
+3. **Set a Jupyter password**:
+
+```bash
+printf "Password: " && read -rs pass && echo && \
+docker run --rm docker.io/1ukastesar/fit-flp-rs python3 -c "from jupyter_server.auth import passwd; print(passwd('$pass'))" | \
+xargs -I{} printf 'c.ServerApp.token = ""\nc.ServerApp.password = "{}"\n' > jupyter_server_config.py
+```
+
+4. **Start the development environment**:
 
     a. Using Docker Compose (recommended):
 
@@ -44,27 +52,7 @@ cd flp-rs-playground
 
 - **VS Code Dev Container**: Once the container is running, you can create and edit files and use the integrated terminal in VS Code (`Ctrl+Shift+;`) to run Rust code and Jupyter notebooks.
 
-- **Jupyter Notebook web interface**: Get the notebook URL with the access token:
-
-```bash
-# Docker Compose: run in current directory
-docker compose exec devcontainer jupyter notebook list
-
-# Dev Containers: integrated terminal
-jupyter notebook list
-```
-
-And then open the provided URL in your web browser to access the Jupyter interface.
-
->[!TIP]
-> If you're running the container on a remote server,
-you may want to get just the token to construct the URL manually
-or enter it into jupyter authorization page in the browser:
-
-```bash
-# Docker Compose: run in current directory
-dce devcontainer jupyter notebook list | grep --color=never -Po 'token=\K\S+'
-```
+- **Jupyter Notebook web interface**: Open [http://localhost:8888](http://localhost:8888) in your browser and log in with the password you set in step 3.
 
 - **Cargo / rustc**: Run Rust tools interactively from the container shell:
 
