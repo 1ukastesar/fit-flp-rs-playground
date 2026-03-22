@@ -1,6 +1,6 @@
 # FLP Rust development playground
 
-This repo provides a complete development environment for Rust & Jupyter labs in the FLP course at Brno University of Technology, Faculty of Information Technology. It uses the [EvCxR](https://github.com/evcxr/evcxr) Rust kernel for Jupyter. It uses Docker Compose and optionally VS Code Dev Containers for easy setup and development.
+This repo provides a complete development environment for Rust & Jupyter labs in the FLP course at Brno University of Technology, Faculty of Information Technology. It uses the [EvCxR](https://github.com/evcxr/evcxr) Rust kernel for Jupyter, with Docker Compose and optionally VS Code Dev Containers for easy setup and development.
 
 ## Setup
 
