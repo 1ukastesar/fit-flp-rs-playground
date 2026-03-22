@@ -7,6 +7,11 @@ RUN apt-get update && \
         build-essential pkg-config libssl-dev libzmq3-dev curl && \
     rm -rf /var/lib/apt/lists/*
 
+# Suppress JupyterLab notification popups (news feed, update checker)
+RUN mkdir -p /opt/conda/share/jupyter/lab/settings && \
+    echo '{"@jupyterlab/apputils-extension:notification": {"fetchNews": "false", "checkForUpdates": false}}' \
+    > /opt/conda/share/jupyter/lab/settings/overrides.json
+
 USER ${NB_USER}
 
 ENV PATH="/home/jovyan/.cargo/bin:$PATH"
