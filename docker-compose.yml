@@ -8,3 +8,4 @@ services:
     volumes:
       - .:/workspaces/rs-playground:Z
       - ./work:/home/jovyan/work:Z
+      - ./overrides.json:/opt/conda/share/jupyter/lab/settings/overrides.json:ro,Z
