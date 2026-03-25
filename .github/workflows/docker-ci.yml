@@ -1,0 +1,49 @@
+name: Docker CI
+
+on:
+  pull_request:
+    paths:
+      - Dockerfile
+      - docker-compose.yml
+      - .github/workflows/docker-ci.yml
+      - .github/workflows/docker-release.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build local image for validation
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          push: false
+          platforms: linux/amd64
+          tags: local/flp-rs-playground:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test toolchain in container
+        run: |
+          docker run --rm local/flp-rs-playground:ci bash -lc "rustc --version && cargo --version && evcxr_jupyter --help >/dev/null"
+
+      - name: Scan image for critical vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: local/flp-rs-playground:ci
+          format: table
+          vuln-type: os,library
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"

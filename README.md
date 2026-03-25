@@ -85,3 +85,40 @@ docker compose exec -u 0 devcontainer chown -R jovyan:users ~jovyan/work
 docker compose exec devcontainer evcxr_jupyter --install
 docker compose exec devcontainer jupyter kernelspec list
 ```
+
+## Docker image auto build and distribution (GitHub Actions)
+
+Automated Docker pipelines are defined in:
+
+- CI validation on pull requests: [.github/workflows/docker-ci.yml](.github/workflows/docker-ci.yml)
+- Multi-arch image publishing to GHCR: [.github/workflows/docker-release.yml](.github/workflows/docker-release.yml)
+
+### What gets published
+
+- Registry: `ghcr.io`
+- Image: `ghcr.io/<owner>/<repo>` (for this repo: `ghcr.io/1ukastesar/fit-flp-rs-playground`)
+- Platforms: `linux/amd64`, `linux/arm64`
+- Tags:
+    - branch and git SHA tags
+    - release tags from `v*`
+    - `latest` for `main` and `v*` tags
+
+### Security and supply chain features
+
+- Vulnerability scanning with Trivy
+- SBOM generation
+- Build provenance attestations
+- Keyless signing with Cosign (OIDC)
+
+### How to trigger release images
+
+1. Push to `main` (publishes `main`, `sha-*`, `latest`).
+2. Create and push a git tag like `v1.2.3` (publishes semver tags + `latest`).
+3. Or run the workflow manually from the Actions tab.
+
+### Required repository settings
+
+- Actions must be enabled for the repository.
+- `GITHUB_TOKEN` must have package write access
+  - Repo -> Settings -> Actions -> General -> Workflow permissions -> Check **Read and write permissions**
+- In package settings, configure package visibility and access (private/public).
